@@ -21,7 +21,6 @@ def generar_mapa_asada_html(nombre: str, x: float, y: float, distrito: str) -> N
     """Crea un visor cartográfico OpenStreetMap para una única ASADA."""
     lat, lon = mapear_coordenadas_crtm05_a_wgs84(x, y)
     
-    # Validar coordenadas por si vienen corruptas en el set original
     if lat == 0.0 or lon == 0.0 or abs(lat) > 90:
         print("[Geo Error] Coordenadas inválidas detectadas para mapeo.")
         return

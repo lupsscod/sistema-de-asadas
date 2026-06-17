@@ -29,7 +29,6 @@ def ejecutar_menu_interactivo(ip_servidor: str) -> None:
 
             respuesta = cliente.enviar_peticion(f"BUSCAR_ID|{id_ingresado}")
             
-            # Cortamos la respuesta usando el nuevo protocolo unificado de @@
             datos = respuesta.split("@@")
             
             if datos[0] == "OK":
@@ -45,7 +44,6 @@ def ejecutar_menu_interactivo(ip_servidor: str) -> None:
                 if ver_mapa == 's':
                     generar_mapa_asada_html(datos[2], float(datos[7]), float(datos[8]), datos[5])
             else:
-                # Si ocurrió un error, el mensaje viene en la segunda posición
                 mensaje_error = datos[1] if len(datos) > 1 else "Error desconocido"
                 print(f"\n[Aviso Servidor]: {mensaje_error}")
 
