@@ -3,7 +3,6 @@ import os
 from typing import List, Tuple
 
 RUTA_INDICE = "datos/asadas.idx"
-# Formato index: I (id, 4B) + Q (offset, 8B) = 12 Bytes fijos por nodo indexado
 FORMATO_INDICE = ">IQ" 
 TAMANIO_NODO_IDX = 12
 

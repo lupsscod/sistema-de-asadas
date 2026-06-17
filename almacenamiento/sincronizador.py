@@ -22,7 +22,6 @@ def requiere_actualizacion() -> Tuple[bool, List[dict]]:
         
         datos_remotos = respuesta.json()
         
-        # CORRECCIÓN OData: Extraer la lista de registros guardada en la llave 'value'
         if isinstance(datos_remotos, dict):
             if 'value' in datos_remotos:
                 datos_remotos = datos_remotos['value']
@@ -59,7 +58,6 @@ def ejecutar_sincronizacion_completa() -> bool:
     """
     necesita_cambio, datos = requiere_actualizacion()
     
-    # Si no hay cambios en la API pero por alguna razón borraste el archivo .idx, forzamos su rearmado
     if not necesita_cambio and os.path.exists("datos/asadas.idx"):
         print("[Sincronizador] El almacenamiento local ya se encuentra al día con la ARESEP.")
         return False
@@ -73,7 +71,6 @@ def ejecutar_sincronizacion_completa() -> bool:
             continue
             
         try:
-            # Tolerancia analítica de llaves para el ID corporativo
             id_asada = elemento.get("id_Asada") or elemento.get("id_asada") or elemento.get("idAsada")
             if id_asada is None:
                 continue
@@ -83,7 +80,6 @@ def ejecutar_sincronizacion_completa() -> bool:
             canton = elemento.get("canton") or elemento.get("Canton") or "DESCONOCIDO"
             distrito = elemento.get("distrito") or elemento.get("Distrito") or "DESCONOCIDO"
             
-            # Limpieza básica de registros espurios o incompletos
             if not str(provincia).strip() or not str(canton).strip() or not str(distrito).strip():
                 continue
 
@@ -107,7 +103,6 @@ def ejecutar_sincronizacion_completa() -> bool:
                 codigo_dta=str(codigo_dta).strip()
             )
 
-            # Escribir el bloque binario de 256 bytes en el repositorio físico
             offset_bytes = escribir_registro_secuencial(objeto_asada)
             mapeo_indices.append((objeto_asada.id_asada, offset_bytes))
 
@@ -118,11 +113,9 @@ def ejecutar_sincronizacion_completa() -> bool:
         print("[Sincronizador] ¡Alerta! Ningún registro superó los filtros de validación.")
         return False
 
-    # Generar el archivo asadas.idx requerido por el ABB
     mapeo_indices.sort(key=lambda x: x[0])
     guardar_indice_lineal(mapeo_indices)
 
-    # Crear el registro de metadatos locales de control
     with open(RUTA_METADATOS, 'w') as archivo:
         json.dump({"cantidad_registros": len(datos)}, archivo)
 
